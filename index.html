@@ -17,23 +17,11 @@
         .avatar-placeholder{color:#e94560;font-size:20px;display:flex;align-items:center;justify-content:center;height:100%}
         .title-section h1{font-size:1.6rem;margin-bottom:5px;text-shadow:0 0 10px rgba(233,69,96,0.5);letter-spacing:1px}
         .title-section p{font-size:0.8rem;color:#b8b8b8}
-        .search-section{position:relative;width:220px}
-        .search-section i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#e94560;font-size:0.9rem}
-        .search-section input{padding:8px 12px 8px 32px;width:100%;border:1px solid #533483;border-radius:20px;font-size:0.85rem;background:rgba(26,26,46,0.8);color:white;transition:all 0.3s}
-        .search-section input::placeholder{color:#b8b8b8}
-        .search-section input:focus{outline:none;border-color:#e94560;box-shadow:0 0 8px rgba(233,69,96,0.3);background:rgba(26,26,46,0.9)}
         .main-content{padding:20px;background:#0f3460}
-        .input-section{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-        input{flex:1;min-width:180px;padding:10px 12px;border:1px solid #2d4059;border-radius:6px;font-size:0.9rem;background:rgba(26,26,46,0.8);color:white;transition:all 0.3s}
-        input:focus{outline:none;border-color:#e94560;box-shadow:0 0 8px rgba(233,69,96,0.3);background:rgba(26,26,46,0.9)}
-        button{background:linear-gradient(135deg,#e94560 0%,#533483 100%);color:white;border:none;padding:10px 16px;border-radius:6px;cursor:pointer;font-size:0.9rem;font-weight:600;transition:all 0.3s;position:relative;overflow:hidden}
-        button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:0.5s}
-        button:hover::before{left:100%}
-        button:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(233,69,96,0.4)}
         .file-info{margin-bottom:15px;padding:12px;background:rgba(45,64,89,0.5);border-radius:8px;font-size:0.8rem;color:#b8b8b8;border-left:3px solid #e94560}
         .file-info h3{margin-bottom:6px;color:#e94560;display:flex;align-items:center;gap:8px;font-size:0.9rem}
         .tags-container{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
-        .tag{color:white;padding:6px 12px;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:0.8rem;animation:fadeIn 0.3s;border:1px solid rgba(255,255,255,0.1);transition:all 0.2s;max-width:200px;position:relative;overflow:hidden;font-weight:500;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+        .tag{color:white;padding:6px 12px;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:0.8rem;animation:fadeIn 0.3s;border:1px solid rgba(255,255,255,0.1);transition:all 0.2s;max-width:200px;position:relative;overflow:hidden;font-weight:500;text-shadow:0 1px 2px rgba(0,0,0,0.5);cursor:pointer}
         .tag::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.05)}
         .tag:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,0.3)}
         .empty-state{text-align:center;padding:30px 20px;color:#b8b8b8}
@@ -44,9 +32,12 @@
         .tag-category{margin-top:20px}
         .category-title{font-size:1rem;margin-bottom:10px;color:#e94560;display:flex;align-items:center;gap:8px;text-shadow:0 0 5px rgba(233,69,96,0.3)}
         .category-title i{font-size:1.2rem}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(5px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+        .tag-meaning-container{display:none;margin-top:20px;padding:15px;background:rgba(45,64,89,0.7);border-radius:8px;border-left:3px solid #e94560}
+        .tag-meaning-title{font-size:1rem;margin-bottom:10px;color:#e94560;display:flex;align-items:center;gap:8px}
+        .tag-meaning-content{color:#b8b8b8;font-size:0.9rem;line-height:1.5}
         .accent-line{height:3px;background:linear-gradient(90deg,transparent,#e94560,transparent);margin:10px 0}
-        @media (max-width:600px){.input-section{flex-direction:column}input{min-width:100%}.search-section{width:100%}header{flex-direction:column;gap:12px;text-align:center}.header-left{flex-direction:column}}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(5px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @media (max-width:600px){header{flex-direction:column;gap:12px;text-align:center}.header-left{flex-direction:column}}
     </style>
 </head>
 <body>
@@ -60,12 +51,8 @@
                 </div>
                 <div class="title-section">
                     <h1>标签系统</h1>
-                    <p>高效管理您的标签</p>
+                    <p>从文件加载标签</p>
                 </div>
-            </div>
-            <div class="search-section">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="搜索标签...">
             </div>
         </header>
         <div class="main-content">
@@ -74,9 +61,12 @@
                 <p>系统已从 <code>标签.txt</code> 文件加载标签</p>
             </div>
             <div class="accent-line"></div>
-            <div class="input-section">
-                <input type="text" id="tagInput" placeholder="输入新标签名称...">
-                <button id="addTagBtn"><i class="fas fa-plus"></i> 添加标签</button>
+            <div class="tag-meaning-container" id="tagMeaningContainer">
+                <div class="tag-meaning-title">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="tagMeaningTitle">标签含义</span>
+                </div>
+                <div class="tag-meaning-content" id="tagMeaningContent"></div>
             </div>
             <div class="tag-category">
                 <div class="category-title">
@@ -88,7 +78,7 @@
             <div class="empty-state" id="emptyState">
                 <i class="fas fa-cloud-moon"></i>
                 <h3>暂无标签</h3>
-                <p>添加第一个标签开始使用</p>
+                <p>请确保标签文件存在且格式正确</p>
             </div>
             <div class="stats">
                 <div>总标签数: <span id="totalTags">0</span></div>
@@ -97,19 +87,151 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded',function(){
-            const e=document.getElementById('tagInput'),t=document.getElementById('addTagBtn'),a=document.getElementById('searchInput'),n=document.getElementById('tagsContainer'),o=document.getElementById('emptyState'),i=document.getElementById('totalTags'),d=document.getElementById('displayedTags'),l=document.getElementById('avatarContainer'),r=['linear-gradient(135deg, #2d4059 0%, #1a1a2e 100%)','linear-gradient(135deg, #533483 0%, #1a1a2e 100%)','linear-gradient(135deg, #e94560 0%, #533483 100%)','linear-gradient(135deg, #16213e 0%, #0f3460 100%)','linear-gradient(135deg, #2d4059 0%, #e94560 100%)','linear-gradient(135deg, #533483 0%, #e94560 100%)','linear-gradient(135deg, #1a1a2e 0%, #2d4059 100%)','linear-gradient(135deg, #0f3460 0%, #533483 100%)'];
-            let s=[],c={};
-            function m(){return r[Math.floor(Math.random()*r.length)]}
-            function p(){localStorage.setItem('tags',JSON.stringify(s)),localStorage.setItem('tagColors',JSON.stringify(c))}
-            function u(){i.textContent=s.length,d.textContent=document.querySelectorAll('.tag').length}
-            function g(e){const t=e||s;0===t.length?(n.style.display='none',o.style.display='block'):(n.style.display='flex',o.style.display='none'),n.innerHTML='',t.forEach((e,t)=>{const a=document.createElement('div');a.className='tag',c[e]||(c[e]=m(),p()),a.style.background=c[e],a.innerHTML=`${e}`,n.appendChild(a)}),u()}
-            function h(){const t=e.value.trim();if(!t)return alert('请输入标签名称'),!1;if(s.includes(t))return alert('该标签已存在'),!1;s.push(t),p(),e.value='',g()}
-            function f(){const e=a.value.toLowerCase().trim();g(e?t=>t.toLowerCase().includes(e):null)}
-            function v(){const e=document.createElement('img');e.onload=function(){l.innerHTML='',l.appendChild(e)},e.onerror=function(){l.innerHTML='<div class="avatar-placeholder"><i class="fas fa-ghost"></i></div>'},e.src='壁纸.jpg'}
-            function b(){fetch('标签.txt').then(e=>{if(!e.ok)throw new Error('文件不存在或无法访问');return e.text()}).then(e=>{const t=e.split(/[、,，]/).map(e=>e.trim()).filter(e=>e.length>0);s=[...t],t.forEach(e=>{c[e]||(c[e]=m())}),p(),g(),console.log('标签已从文件加载完成')}).catch(e=>{console.error('加载标签文件失败:',e),s=[],c={},p(),g()})}
-            t.addEventListener('click',h),e.addEventListener('keypress',function(e){'Enter'===e.key&&h()}),a.addEventListener('input',f);
-            const L=JSON.parse(localStorage.getItem('tags'))||[],w=JSON.parse(localStorage.getItem('tagColors'))||{};L.length>0&&(s=L,c=w),v(),g(),b()
+        document.addEventListener('DOMContentLoaded', function() {
+            const tagsContainer = document.getElementById('tagsContainer');
+            const emptyState = document.getElementById('emptyState');
+            const totalTags = document.getElementById('totalTags');
+            const displayedTags = document.getElementById('displayedTags');
+            const avatarContainer = document.getElementById('avatarContainer');
+            const tagMeaningContainer = document.getElementById('tagMeaningContainer');
+            const tagMeaningTitle = document.getElementById('tagMeaningTitle');
+            const tagMeaningContent = document.getElementById('tagMeaningContent');
+            
+            const colorPalettes = [
+                'linear-gradient(135deg, #2d4059 0%, #1a1a2e 100%)',
+                'linear-gradient(135deg, #533483 0%, #1a1a2e 100%)',
+                'linear-gradient(135deg, #e94560 0%, #533483 100%)',
+                'linear-gradient(135deg, #16213e 0%, #0f3460 100%)',
+                'linear-gradient(135deg, #2d4059 0%, #e94560 100%)',
+                'linear-gradient(135deg, #533483 0%, #e94560 100%)',
+                'linear-gradient(135deg, #1a1a2e 0%, #2d4059 100%)',
+                'linear-gradient(135deg, #0f3460 0%, #533483 100%)'
+            ];
+            
+            let tags = [];
+            let tagColors = {};
+            let tagMeanings = {};
+            
+            function getRandomColor() {
+                return colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+            }
+            
+            function updateStats() {
+                totalTags.textContent = tags.length;
+                displayedTags.textContent = document.querySelectorAll('.tag').length;
+            }
+            
+            function displayTags() {
+                if (tags.length === 0) {
+                    tagsContainer.style.display = 'none';
+                    emptyState.style.display = 'block';
+                } else {
+                    tagsContainer.style.display = 'flex';
+                    emptyState.style.display = 'none';
+                    tagsContainer.innerHTML = '';
+                    
+                    tags.forEach(tag => {
+                        const tagElement = document.createElement('div');
+                        tagElement.className = 'tag';
+                        
+                        if (!tagColors[tag]) {
+                            tagColors[tag] = getRandomColor();
+                        }
+                        
+                        tagElement.style.background = tagColors[tag];
+                        tagElement.textContent = tag;
+                        
+                        tagElement.addEventListener('click', () => {
+                            showTagMeaning(tag);
+                        });
+                        
+                        tagsContainer.appendChild(tagElement);
+                    });
+                }
+                
+                updateStats();
+            }
+            
+            function showTagMeaning(tag) {
+                if (tagMeanings[tag]) {
+                    tagMeaningTitle.textContent = `${tag} 的含义`;
+                    tagMeaningContent.textContent = tagMeanings[tag];
+                    tagMeaningContainer.style.display = 'block';
+                } else {
+                    tagMeaningTitle.textContent = `${tag} 的含义`;
+                    tagMeaningContent.textContent = '该标签暂无详细解释';
+                    tagMeaningContainer.style.display = 'block';
+                }
+            }
+            
+            function loadAvatar() {
+                const img = document.createElement('img');
+                img.onload = function() {
+                    avatarContainer.innerHTML = '';
+                    avatarContainer.appendChild(img);
+                };
+                img.onerror = function() {
+                    avatarContainer.innerHTML = '<div class="avatar-placeholder"><i class="fas fa-ghost"></i></div>';
+                };
+                img.src = '壁纸.jpg';
+            }
+            
+            function loadTagsFromFile() {
+                fetch('标签.txt')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('文件不存在或无法访问');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        // 解析标签文件
+                        parseTagFile(data);
+                        displayTags();
+                        console.log('标签已从文件加载完成');
+                    })
+                    .catch(error => {
+                        console.error('加载标签文件失败:', error);
+                        tags = [];
+                        tagColors = {};
+                        tagMeanings = {};
+                        displayTags();
+                    });
+            }
+            
+            function parseTagFile(data) {
+                tags = [];
+                tagMeanings = {};
+                
+                // 按行分割文件内容
+                const lines = data.split('\n').filter(line => line.trim() !== '');
+                
+                lines.forEach(line => {
+                    // 检查是否是标签定义行（包含冒号）
+                    if (line.includes('：') || line.includes(':')) {
+                        const separator = line.includes('：') ? '：' : ':';
+                        const parts = line.split(separator);
+                        
+                        if (parts.length >= 2) {
+                            const tag = parts[0].trim();
+                            const meaning = parts.slice(1).join(separator).trim();
+                            
+                            tags.push(tag);
+                            tagMeanings[tag] = meaning;
+                        }
+                    } else {
+                        // 如果没有冒号，则视为简单标签
+                        const tag = line.trim();
+                        if (tag) {
+                            tags.push(tag);
+                        }
+                    }
+                });
+            }
+            
+            // 初始化
+            loadAvatar();
+            loadTagsFromFile();
         });
     </script>
 </body>
