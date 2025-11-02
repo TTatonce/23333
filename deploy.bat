@@ -1,34 +1,34 @@
 @echo off
 chcp 65001 >nul
 echo ========================================
-echo   星穹六象标签系统 - 自动部署脚本
+echo   Auto Deploy Script
 echo ========================================
 echo.
 
-REM 检查是否有未提交的更改
-git status --porcelain
-if %errorlevel% equ 0 (
-    echo 检查到未提交的更改...
-) else (
-    echo 工作区是干净的
-)
+echo Checking Git status...
+git status
 
-REM 添加所有更改
-echo 正在添加文件到暂存区...
+echo.
+echo Adding files to staging area...
 git add .
 
-REM 提交更改
-set /p commit_msg="请输入提交信息（默认：自动部署更新）: "
-if "%commit_msg%"=="" set commit_msg=自动部署更新
+set /p commit_msg="Enter commit message: "
+if "%commit_msg%"=="" (
+    set commit_msg=Auto deployment
+)
+
+echo Committing changes...
 git commit -m "%commit_msg%"
 
-REM 推送到远程仓库
-echo 正在推送到远程仓库...
-git push origin main
+echo Pushing to remote repository...
+REM 自动检测当前分支
+for /f "tokens=*" %%i in ('git branch --show-current') do set current_branch=%%i
+echo Current branch: %current_branch%
+git push origin %current_branch%
 
 echo.
 echo ========================================
-echo   部署完成！
+echo   Deployment Completed!
 echo ========================================
 echo.
 pause
