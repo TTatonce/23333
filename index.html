@@ -56,7 +56,7 @@
         
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
             background: rgba(44, 62, 80, 0.85);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -174,19 +174,19 @@
         .tags-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 12px;
             margin-top: 15px;
             justify-content: center;
         }
         
-        /* 优化后的标签样式 - 刚好容纳文字 */
+        /* 标签样式 - 包含等级显示 */
         .tag {
             color: white;
-            padding: 6px 12px;
-            border-radius: 4px; /* 轻微圆角 */
+            padding: 8px 15px;
+            border-radius: 6px;
             display: inline-flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             gap: 4px;
             font-size: 0.85rem;
             animation: fadeIn 0.3s;
@@ -199,8 +199,7 @@
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
-            white-space: nowrap;
-            height: 32px;
+            min-width: 100px;
         }
         
         .tag::before {
@@ -214,8 +213,74 @@
         }
         
         .tag:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 等级显示样式 */
+        .tag-level {
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            margin-top: 2px;
+        }
+        
+        /* 不同等级的样式 */
+        .level-1 { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); }
+        .level-2 { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        .level-3 { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
+        .level-4 { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); }
+        .level-5 { 
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); 
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        }
+        
+        /* 最高等级的特殊效果 */
+        .max-level {
+            position: relative;
+            overflow: visible;
+            border: 2px solid gold;
+            animation: glow 2s infinite alternate;
+        }
+        
+        .max-level::after {
+            content: '★';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            color: gold;
+            font-size: 1rem;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+            animation: sparkle 1.5s infinite;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 5px gold; }
+            to { box-shadow: 0 0 15px gold, 0 0 20px rgba(255, 215, 0, 0.5); }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+        }
+        
+        /* 等级进度条 */
+        .level-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+        
+        .level-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #f1c40f);
+            border-radius: 2px;
+            transition: width 0.5s ease;
         }
         
         .empty-state {
@@ -317,6 +382,7 @@
         @media (max-width: 600px) {
             header { flex-direction: column; gap: 12px; text-align: center; }
             .header-left { flex-direction: column; }
+            .tag { min-width: 90px; }
         }
     </style>
 </head>
@@ -334,14 +400,14 @@
                 </div>
                 <div class="title-section">
                     <h1>星穹六象标签系统</h1>
-                    <p>后台自动加载数据</p>
+                    <p>等级修行之路</p>
                 </div>
             </div>
         </header>
         <div class="main-content">
             <div class="file-info">
-                <h3><i class="fas fa-file-alt"></i> 总结</h3>
-                <p>从0开始的修行之旅</p>
+                <h3><i class="fas fa-file-alt"></i> 修行总结</h3>
+                <p>从0开始的等级修行之旅</p>
             </div>
             <div class="accent-line"></div>
             <div class="tag-meaning-container" id="tagMeaningContainer">
@@ -365,7 +431,8 @@
             </div>
             <div class="stats">
                 <div>总标签数: <span id="totalTags">0</span></div>
-                <div>当前显示: <span id="displayedTags">0</span></div>
+                <div>最高等级标签: <span id="maxLevelTags">0</span></div>
+                <div>平均等级: <span id="avgLevel">0</span></div>
             </div>
         </div>
     </div>
@@ -374,7 +441,8 @@
             const tagsContainer = document.getElementById('tagsContainer');
             const emptyState = document.getElementById('emptyState');
             const totalTags = document.getElementById('totalTags');
-            const displayedTags = document.getElementById('displayedTags');
+            const maxLevelTags = document.getElementById('maxLevelTags');
+            const avgLevel = document.getElementById('avgLevel');
             const avatarContainer = document.getElementById('avatarContainer');
             const tagMeaningContainer = document.getElementById('tagMeaningContainer');
             const tagMeaningTitle = document.getElementById('tagMeaningTitle');
@@ -404,27 +472,50 @@
             }
             
             const colorPalettes = [
-                'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
+                'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
                 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)',
                 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)',
                 'linear-gradient(135deg, #f39c12 0%, #d35400 100%)',
+                'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
                 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)',
-                'linear-gradient(135deg, #1abc9c 0%, #16a085 100%)',
-                'linear-gradient(135deg, #34495e 0%, #2c3e50 100%)',
-                'linear-gradient(135deg, #e67e22 0%, #d35400 100%)'
+                'linear-gradient(135deg, #1abc9c 0%, #16a085 100%)'
             ];
             
             let tags = [];
-            let tagColors = {};
+            let tagLevels = {};
+            let tagMaxLevels = {};
             let tagMeanings = {};
             
-            function getRandomColor() {
-                return colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+            function getLevelColor(currentLevel, maxLevel) {
+                const levelRatio = currentLevel / maxLevel;
+                if (levelRatio >= 1) return 'level-5';
+                if (levelRatio >= 0.8) return 'level-4';
+                if (levelRatio >= 0.6) return 'level-3';
+                if (levelRatio >= 0.4) return 'level-2';
+                return 'level-1';
             }
             
             function updateStats() {
                 totalTags.textContent = tags.length;
-                displayedTags.textContent = document.querySelectorAll('.tag').length;
+                
+                let maxLevelCount = 0;
+                let totalCurrentLevel = 0;
+                let totalMaxLevel = 0;
+                
+                tags.forEach(tag => {
+                    const currentLevel = tagLevels[tag] || 1;
+                    const maxLevel = tagMaxLevels[tag] || 1;
+                    
+                    if (currentLevel === maxLevel) {
+                        maxLevelCount++;
+                    }
+                    
+                    totalCurrentLevel += currentLevel;
+                    totalMaxLevel += maxLevel;
+                });
+                
+                maxLevelTags.textContent = maxLevelCount;
+                avgLevel.textContent = tags.length > 0 ? (totalCurrentLevel / tags.length).toFixed(1) : '0';
             }
             
             function displayTags() {
@@ -440,15 +531,44 @@
                         const tagElement = document.createElement('div');
                         tagElement.className = 'tag';
                         
-                        if (!tagColors[tag]) {
-                            tagColors[tag] = getRandomColor();
+                        const currentLevel = tagLevels[tag] || 1;
+                        const maxLevel = tagMaxLevels[tag] || 1;
+                        
+                        // 设置等级样式
+                        const levelClass = getLevelColor(currentLevel, maxLevel);
+                        tagElement.classList.add(levelClass);
+                        
+                        // 如果是最高等级，添加特殊效果
+                        if (currentLevel === maxLevel && maxLevel > 1) {
+                            tagElement.classList.add('max-level');
                         }
                         
-                        tagElement.style.background = tagColors[tag];
-                        tagElement.textContent = tag;
+                        // 标签名称
+                        const tagName = document.createElement('div');
+                        tagName.textContent = tag;
+                        tagName.className = 'tag-name';
+                        
+                        // 等级显示
+                        const levelDisplay = document.createElement('div');
+                        levelDisplay.textContent = `${currentLevel}/${maxLevel}`;
+                        levelDisplay.className = 'tag-level';
+                        
+                        // 进度条
+                        const progressContainer = document.createElement('div');
+                        progressContainer.className = 'level-progress';
+                        
+                        const progressBar = document.createElement('div');
+                        progressBar.className = 'level-progress-bar';
+                        progressBar.style.width = `${(currentLevel / maxLevel) * 100}%`;
+                        
+                        progressContainer.appendChild(progressBar);
+                        
+                        tagElement.appendChild(tagName);
+                        tagElement.appendChild(levelDisplay);
+                        tagElement.appendChild(progressContainer);
                         
                         tagElement.addEventListener('click', () => {
-                            showTagMeaning(tag);
+                            showTagMeaning(tag, currentLevel, maxLevel);
                         });
                         
                         tagsContainer.appendChild(tagElement);
@@ -458,13 +578,13 @@
                 updateStats();
             }
             
-            function showTagMeaning(tag) {
+            function showTagMeaning(tag, currentLevel, maxLevel) {
                 if (tagMeanings[tag]) {
-                    tagMeaningTitle.textContent = `${tag} 的含义`;
+                    tagMeaningTitle.textContent = `${tag} (${currentLevel}/${maxLevel})`;
                     tagMeaningContent.textContent = tagMeanings[tag];
                     tagMeaningContainer.style.display = 'block';
                 } else {
-                    tagMeaningTitle.textContent = `${tag} 的含义`;
+                    tagMeaningTitle.textContent = `${tag} (${currentLevel}/${maxLevel})`;
                     tagMeaningContent.textContent = '该标签暂无详细解释';
                     tagMeaningContainer.style.display = 'block';
                 }
@@ -508,7 +628,8 @@
                         emptyState.style.display = 'block';
                         tagsContainer.style.display = 'none';
                         tags = [];
-                        tagColors = {};
+                        tagLevels = {};
+                        tagMaxLevels = {};
                         tagMeanings = {};
                         updateStats();
                     });
@@ -516,6 +637,8 @@
             
             function parseTagFile(data) {
                 tags = [];
+                tagLevels = {};
+                tagMaxLevels = {};
                 tagMeanings = {};
                 
                 // 按行分割文件内容
@@ -528,17 +651,38 @@
                         const parts = line.split(separator);
                         
                         if (parts.length >= 2) {
-                            const tag = parts[0].trim();
+                            const tagPart = parts[0].trim();
                             const meaning = parts.slice(1).join(separator).trim();
                             
-                            tags.push(tag);
-                            tagMeanings[tag] = meaning;
+                            // 解析标签名称和等级
+                            const levelMatch = tagPart.match(/(.+)\s*\((\d+)\/(\d+)\)$/);
+                            
+                            if (levelMatch) {
+                                // 有等级信息的标签
+                                const tag = levelMatch[1].trim();
+                                const currentLevel = parseInt(levelMatch[2]);
+                                const maxLevel = parseInt(levelMatch[3]);
+                                
+                                tags.push(tag);
+                                tagLevels[tag] = currentLevel;
+                                tagMaxLevels[tag] = maxLevel;
+                                tagMeanings[tag] = meaning;
+                            } else {
+                                // 没有等级信息的标签，默认为1/1
+                                const tag = tagPart.trim();
+                                tags.push(tag);
+                                tagLevels[tag] = 1;
+                                tagMaxLevels[tag] = 1;
+                                tagMeanings[tag] = meaning;
+                            }
                         }
                     } else {
-                        // 如果没有冒号，则视为简单标签
+                        // 如果没有冒号，则视为简单标签，默认为1/1
                         const tag = line.trim();
                         if (tag) {
                             tags.push(tag);
+                            tagLevels[tag] = 1;
+                            tagMaxLevels[tag] = 1;
                         }
                     }
                 });
