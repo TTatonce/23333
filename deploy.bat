@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 echo ========================================
 echo   星穹六象标签系统 - 自动部署脚本
 echo ========================================
@@ -24,10 +25,6 @@ git commit -m "%commit_msg%"
 REM 推送到远程仓库
 echo 正在推送到远程仓库...
 git push origin main
-
-REM 如果使用GitHub Pages，可以添加构建步骤
-echo 正在构建项目...
-REM 这里可以添加构建命令，比如 npm run build 等
 
 echo.
 echo ========================================
