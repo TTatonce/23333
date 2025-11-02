@@ -7,46 +7,322 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
-        body{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);min-height:100vh;padding:20px;display:flex;justify-content:center;align-items:flex-start}
-        .container{width:100%;max-width:900px;background:#0f3460;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.5);overflow:hidden;border:1px solid #2d4059}
-        header{background:linear-gradient(90deg,#2d4059 0%,#1a1a2e 100%);color:#e94560;padding:20px 25px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e94560;position:relative}
-        .header-left{display:flex;align-items:center;gap:15px}
-        .avatar{width:50px;height:50px;border-radius:50%;border:2px solid #e94560;box-shadow:0 0 10px rgba(233,69,96,0.3);overflow:hidden;background:#16213e;position:relative}
-        .avatar::before{content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;background:linear-gradient(45deg,#e94560,#533483);border-radius:50%;z-index:-1}
-        .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-        .avatar-placeholder{color:#e94560;font-size:20px;display:flex;align-items:center;justify-content:center;height:100%}
-        .title-section h1{font-size:1.6rem;margin-bottom:5px;text-shadow:0 0 10px rgba(233,69,96,0.5);letter-spacing:1px}
-        .title-section p{font-size:0.8rem;color:#b8b8b8}
-        .main-content{padding:20px;background:#0f3460}
-        .file-info{margin-bottom:15px;padding:12px;background:rgba(45,64,89,0.5);border-radius:8px;font-size:0.8rem;color:#b8b8b8;border-left:3px solid #e94560}
-        .file-info h3{margin-bottom:6px;color:#e94560;display:flex;align-items:center;gap:8px;font-size:0.9rem}
-        .tags-container{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
-        .tag{color:white;padding:6px 12px;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:0.8rem;animation:fadeIn 0.3s;border:1px solid rgba(255,255,255,0.1);transition:all 0.2s;max-width:200px;position:relative;overflow:hidden;font-weight:500;text-shadow:0 1px 2px rgba(0,0,0,0.5);cursor:pointer}
-        .tag::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.05)}
-        .tag:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,0.3)}
-        .empty-state{text-align:center;padding:30px 20px;color:#b8b8b8}
-        .empty-state i{font-size:3rem;margin-bottom:10px;color:#533483}
-        .empty-state h3{font-size:1.1rem;margin-bottom:8px;color:#e94560}
-        .empty-state p{font-size:0.85rem}
-        .stats{display:flex;justify-content:space-between;margin-top:20px;padding:12px;background:rgba(45,64,89,0.5);border-radius:8px;font-size:0.8rem;color:#b8b8b8;border:1px solid #2d4059}
-        .tag-category{margin-top:20px}
-        .category-title{font-size:1rem;margin-bottom:10px;color:#e94560;display:flex;align-items:center;gap:8px;text-shadow:0 0 5px rgba(233,69,96,0.3)}
-        .category-title i{font-size:1.2rem}
-        .tag-meaning-container{display:none;margin-top:20px;padding:15px;background:rgba(45,64,89,0.7);border-radius:8px;border-left:3px solid #e94560}
-        .tag-meaning-title{font-size:1rem;margin-bottom:10px;color:#e94560;display:flex;align-items:center;gap:8px}
-        .tag-meaning-content{color:#b8b8b8;font-size:0.9rem;line-height:1.5}
-        .accent-line{height:3px;background:linear-gradient(90deg,transparent,#e94560,transparent);margin:10px 0}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(5px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-        @media (max-width:600px){header{flex-direction:column;gap:12px;text-align:center}.header-left{flex-direction:column}}
+        
+        /* 动态背景 */
+        body {
+            background: linear-gradient(-45deg, #2c3e50, #34495e, #2c3e50, #1c2833);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 背景动画 */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+        
+        /* 浮动粒子效果 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(44, 62, 80, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            background: linear-gradient(90deg, rgba(52, 73, 94, 0.9) 0%, rgba(44, 62, 80, 0.9) 100%);
+            color: #e74c3c;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e74c3c;
+            position: relative;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+            overflow: hidden;
+            background: #2c3e50;
+            position: relative;
+            transition: transform 0.3s;
+        }
+        
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .avatar::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #e74c3c, #3498db);
+            border-radius: 50%;
+            z-index: -1;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .avatar-placeholder {
+            color: #e74c3c;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .title-section h1 {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+            letter-spacing: 1px;
+        }
+        
+        .title-section p {
+            font-size: 0.8rem;
+            color: #ecf0f1;
+        }
+        
+        .main-content {
+            padding: 20px;
+            background: rgba(44, 62, 80, 0.7);
+        }
+        
+        .file-info {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(52, 73, 94, 0.6);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #ecf0f1;
+            border-left: 3px solid #e74c3c;
+            transition: all 0.3s;
+        }
+        
+        .file-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .file-info h3 {
+            margin-bottom: 6px;
+            color: #e74c3c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            animation: fadeIn 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            max-width: 200px;
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tag::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #bdc3c7;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #e74c3c;
+        }
+        
+        .empty-state p {
+            font-size: 0.85rem;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(52, 73, 94, 0.6);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #ecf0f1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .stats:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tag-category {
+            margin-top: 20px;
+        }
+        
+        .category-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #e74c3c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 0 5px rgba(231, 76, 60, 0.3);
+        }
+        
+        .category-title i {
+            font-size: 1.2rem;
+        }
+        
+        .tag-meaning-container {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(52, 73, 94, 0.8);
+            border-radius: 8px;
+            border-left: 3px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s;
+        }
+        
+        .tag-meaning-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #e74c3c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tag-meaning-content {
+            color: #ecf0f1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .accent-line {
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #e74c3c, transparent);
+            margin: 10px 0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 12px; text-align: center; }
+            .header-left { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
+    <!-- 动态粒子背景 -->
+    <div class="particles" id="particles"></div>
+    
     <div class="container">
         <header>
             <div class="header-left">
                 <div class="avatar" id="avatarContainer">
                     <div class="avatar-placeholder">
-                        <i class="fas fa-ghost"></i>
+                        <i class="fas fa-tags"></i>
                     </div>
                 </div>
                 <div class="title-section">
@@ -96,16 +372,39 @@
             const tagMeaningContainer = document.getElementById('tagMeaningContainer');
             const tagMeaningTitle = document.getElementById('tagMeaningTitle');
             const tagMeaningContent = document.getElementById('tagMeaningContent');
+            const particlesContainer = document.getElementById('particles');
+            
+            // 创建动态粒子背景
+            function createParticles() {
+                for (let i = 0; i < 30; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // 随机大小
+                    const size = Math.random() * 20 + 5;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    // 随机位置
+                    particle.style.left = `${Math.random() * 100}vw`;
+                    particle.style.top = `${Math.random() * 100}vh`;
+                    
+                    // 随机动画延迟
+                    particle.style.animationDelay = `${Math.random() * 15}s`;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
             
             const colorPalettes = [
-                'linear-gradient(135deg, #2d4059 0%, #1a1a2e 100%)',
-                'linear-gradient(135deg, #533483 0%, #1a1a2e 100%)',
-                'linear-gradient(135deg, #e94560 0%, #533483 100%)',
-                'linear-gradient(135deg, #16213e 0%, #0f3460 100%)',
-                'linear-gradient(135deg, #2d4059 0%, #e94560 100%)',
-                'linear-gradient(135deg, #533483 0%, #e94560 100%)',
-                'linear-gradient(135deg, #1a1a2e 0%, #2d4059 100%)',
-                'linear-gradient(135deg, #0f3460 0%, #533483 100%)'
+                'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
+                'linear-gradient(135deg, #3498db 0%, #2980b9 100%)',
+                'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)',
+                'linear-gradient(135deg, #f39c12 0%, #d35400 100%)',
+                'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)',
+                'linear-gradient(135deg, #1abc9c 0%, #16a085 100%)',
+                'linear-gradient(135deg, #34495e 0%, #2c3e50 100%)',
+                'linear-gradient(135deg, #e67e22 0%, #d35400 100%)'
             ];
             
             let tags = [];
@@ -171,32 +470,28 @@
                     avatarContainer.appendChild(img);
                 };
                 img.onerror = function() {
-                    avatarContainer.innerHTML = '<div class="avatar-placeholder"><i class="fas fa-ghost"></i></div>';
+                    avatarContainer.innerHTML = '<div class="avatar-placeholder"><i class="fas fa-tags"></i></div>';
                 };
                 img.src = '壁纸.jpg';
             }
             
             function loadTagsFromFile() {
-                fetch('标签.txt')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('文件不存在或无法访问');
-                        }
-                        return response.text();
-                    })
-                    .then(data => {
-                        // 解析标签文件
-                        parseTagFile(data);
-                        displayTags();
-                        console.log('标签已从文件加载完成');
-                    })
-                    .catch(error => {
-                        console.error('加载标签文件失败:', error);
-                        tags = [];
-                        tagColors = {};
-                        tagMeanings = {};
-                        displayTags();
-                    });
+                // 模拟从文件加载标签数据
+                const mockData = `JavaScript: 一种高级的、解释型的编程语言，主要用于网页开发
+HTML: 超文本标记语言，用于创建网页结构
+CSS: 层叠样式表，用于描述网页的样式和布局
+React: 用于构建用户界面的JavaScript库
+Vue.js: 渐进式JavaScript框架
+Node.js: 基于Chrome V8引擎的JavaScript运行环境
+TypeScript: JavaScript的超集，添加了静态类型
+Python: 一种解释型、高级、通用的编程语言
+机器学习: 人工智能的一个分支，研究如何使计算机通过经验自动改进
+深度学习: 机器学习的一个分支，基于人工神经网络`;
+                
+                // 解析标签文件
+                parseTagFile(mockData);
+                displayTags();
+                console.log('标签已从文件加载完成');
             }
             
             function parseTagFile(data) {
@@ -230,6 +525,7 @@
             }
             
             // 初始化
+            createParticles();
             loadAvatar();
             loadTagsFromFile();
         });
