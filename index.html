@@ -476,22 +476,35 @@
             }
             
             function loadTagsFromFile() {
-                // 模拟从文件加载标签数据
-                const mockData = `JavaScript: 一种高级的、解释型的编程语言，主要用于网页开发
-HTML: 超文本标记语言，用于创建网页结构
-CSS: 层叠样式表，用于描述网页的样式和布局
-React: 用于构建用户界面的JavaScript库
-Vue.js: 渐进式JavaScript框架
-Node.js: 基于Chrome V8引擎的JavaScript运行环境
-TypeScript: JavaScript的超集，添加了静态类型
-Python: 一种解释型、高级、通用的编程语言
-机器学习: 人工智能的一个分支，研究如何使计算机通过经验自动改进
-深度学习: 机器学习的一个分支，基于人工神经网络`;
-                
-                // 解析标签文件
-                parseTagFile(mockData);
-                displayTags();
-                console.log('标签已从文件加载完成');
+                fetch('标签.txt')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('文件不存在或无法访问');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        // 解析标签文件
+                        parseTagFile(data);
+                        displayTags();
+                        console.log('标签已从文件加载完成');
+                    })
+                    .catch(error => {
+                        console.error('加载标签文件失败:', error);
+                        // 如果文件加载失败，显示错误信息
+                        emptyState.innerHTML = `
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>加载失败</h3>
+                            <p>无法加载标签文件: ${error.message}</p>
+                            <p style="margin-top: 10px; font-size: 0.75rem;">请确保同级目录下存在"标签.txt"文件</p>
+                        `;
+                        emptyState.style.display = 'block';
+                        tagsContainer.style.display = 'none';
+                        tags = [];
+                        tagColors = {};
+                        tagMeanings = {};
+                        updateStats();
+                    });
             }
             
             function parseTagFile(data) {
